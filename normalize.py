@@ -77,7 +77,7 @@ def normalize(pysam_fasta, chrom, pos, ref, alt):
     if alt == '-':
         alt = ''
     # check whether the REF is correct
-    true_ref = pysam_fasta.fetch(chrom, pos - 1, pos - 1 + len(ref))
+    true_ref = pysam_fasta.fetch(chrom, pos - 1, pos - 1 + len(ref)).upper()
     if ref != true_ref:
         raise WrongRefError('Incorrect REF value: %s %s %s %s (actual REF should be %s)'%(chrom, pos, ref, alt, true_ref))
     # Prevent infinte loops in cases where REF == ALT.
@@ -147,7 +147,7 @@ def normalize_tab_delimited_file(infile, outfile, reference_fasta, verbose=True)
         data['pos'] = str(pos)
         outfile.write('\t'.join([data[column] for column in columns]) + '\n')
         counter += 1
-        if verbose:
+        if verbose and counter % 1000 == 0:
             sys.stderr.write("\r%s records processed\n"%(counter))
     outfile.write('\n\n')
     if verbose:
